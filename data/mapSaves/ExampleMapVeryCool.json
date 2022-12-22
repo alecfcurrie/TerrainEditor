@@ -1,0 +1,199 @@
+{
+    "terrainFull": [
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "WATER"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ]
+    ],
+    "name": "ExampleMap",
+    "units": [
+        {
+            "faction": "ENEMY",
+            "x": 5,
+            "y": 7,
+            "class": "PEGASUS_KNIGHT"
+        },
+        {
+            "faction": "PLAYER",
+            "x": 8,
+            "y": 7,
+            "class": "PEGASUS_KNIGHT"
+        }
+    ]
+}

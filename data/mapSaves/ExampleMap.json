@@ -1,0 +1,223 @@
+{
+    "terrainFull": [
+        [
+            {"terrain": "WALL"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "WALL"},
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "WALL"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "WALL"},
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"}
+        ],
+        [
+            {"terrain": "WALL"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "WALL"},
+            {"terrain": "PLAIN"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"}
+        ],
+        [
+            {"terrain": "WALL"},
+            {"terrain": "WALL"},
+            {"terrain": "WALL"},
+            {"terrain": "WALL"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "WATER"},
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "PLAIN"},
+            {"terrain": "CHEST"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "FOREST"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "FOREST"},
+            {"terrain": "FOREST"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "FOREST"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ],
+        [
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"},
+            {"terrain": "PLAIN"}
+        ]
+    ],
+    "name": "ExampleMap",
+    "units": [
+        {
+            "faction": "PLAYER",
+            "x": 11,
+            "y": 4,
+            "class": "ARCHER"
+        },
+        {
+            "faction": "PLAYER",
+            "x": 13,
+            "y": 5,
+            "class": "ARCHER"
+        },
+        {
+            "faction": "ALLY",
+            "x": 2,
+            "y": 1,
+            "class": "ARCHER"
+        },
+        {
+            "faction": "ENEMY",
+            "x": 1,
+            "y": 2,
+            "class": "NINJA"
+        },
+        {
+            "faction": "ENEMY",
+            "x": 0,
+            "y": 2,
+            "class": "NINJA"
+        },
+        {
+            "faction": "ENEMY",
+            "x": 0,
+            "y": 1,
+            "class": "NINJA"
+        }
+    ]
+}
