@@ -1,7 +1,6 @@
 package ui;
 
 import model.*;
-import model.Event;
 import org.json.JSONException;
 import persistence.JsonReader;
 import persistence.JsonWriter;
@@ -13,15 +12,15 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 // Represents a graphical interface to edit Terrain objects
 public class TerrainEditorFrame extends JFrame implements ActionListener {
 
+    private static final Logger log = Logger.getLogger(TerrainEditorFrame.class.getName());
     private static final String NEW_MAP = "NewMap";
     private static final String LOAD_MAP = "LoadMap";
     private static final String SAVE_MAP = "SaveMap";
@@ -483,10 +482,7 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
     }
 
     public static void printLog() {
-        EventLog el = EventLog.getInstance();
-        for (Event event : el) {
-            System.out.println(event.toString());
-        }
+        log.info("Some string");
     }
 
 }

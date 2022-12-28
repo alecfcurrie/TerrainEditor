@@ -5,10 +5,12 @@ import persistence.Writable;
 
 import java.awt.*;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 // Represents a unit, with a position, class, and faction.
 public class Unit implements Writable {
 
+    private static final Logger log = Logger.getGlobal();
     private Faction faction;
     private BattleClass battleClass;
     private Point position;
@@ -18,28 +20,28 @@ public class Unit implements Writable {
         this.faction = faction;
         this.battleClass = battleClass;
         this.position = new Point(x, y);
-        EventLog.getInstance().logEvent(new Event(EventUtility.getUnitInstantiationMessage(this)));
+        log.info(EventUtility.getUnitInstantiationMessage(this));
     }
 
     //MODIFIES: this
     //EFFECTS: sets unit's faction to the given faction
     public void setFaction(Faction faction) {
         this.faction = faction;
-        EventLog.getInstance().logEvent(new Event(EventUtility.getFactionChangeMessage(this)));
+        log.info(EventUtility.getFactionChangeMessage(this));
     }
 
     //MODIFIES: this
     //EFFECTS: sets unit's battle class to the given class
     public void setBattleClass(BattleClass battleClass) {
         this.battleClass = battleClass;
-        EventLog.getInstance().logEvent(new Event(EventUtility.getBattleClassChangeMessage(this)));
+        log.info(EventUtility.getBattleClassChangeMessage(this));
     }
 
     //MODIFIES: this
     //EFFECTS : sets unit's position to the new coordinates
     public void move(int x, int y) {
         position.setLocation(x, y);
-        EventLog.getInstance().logEvent(new Event(EventUtility.getMoveUnitMessage(x, y)));
+        log.info(EventUtility.getMoveUnitMessage(x, y));
     }
 
     public Faction getFaction() {

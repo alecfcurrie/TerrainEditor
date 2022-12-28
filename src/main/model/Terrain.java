@@ -7,10 +7,15 @@ import persistence.Writable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 
-// Represents a map with a width, height, terrain, and units. Map dimensions and terrain can be edited, as well as unit
-// parameters for units that are on the map.
+/**
+ * Represents a map with a width, height, terrain, and units. Map dimensions and
+ * terrain can be edited, as well as unit parameters for units that are on the map.
+ */
 public class Terrain implements Writable {
+
+    private static final Logger log = Logger.getLogger(Terrain.class.getName());
 
     private String name;
     private TerrainTile[][] terrainTile;
@@ -18,31 +23,48 @@ public class Terrain implements Writable {
     public static final int MIN_WIDTH = 15;
     public static final int MIN_HEIGHT = 10;
 
-    private UnitList units;
+    private final UnitList units;
 
 
-    //REQUIRES: width >= MIN_WIDTH and height >= MIN_HEIGHT
-    //EFFECTS : Constructs a new map, entirely of plain tiles, with the given height and width specifications
+    /**
+     * Constructs a new map, entirely of plain tiles, with the given height and width specifications.
+     *
+     * @param name   Name of the Terrain
+     * @param width  Width of Terrain. Must be greater than MIN_WIDTH
+     * @param height Height of Terrain. Must be greater than MIN_HEIGHT
+     */
+
+    // TODO ADD EXCEPTION FOR INSUFFICIENT HEIGHT+WIDTH
     public Terrain(String name, int width, int height) {
         this.name = name;
         this.terrainTile = new TerrainTile[width][height];
         setAllTerrainToPlain(terrainTile);
         this.units = new UnitList();
-        EventLog.getInstance().logEvent(new Event(
-                EventUtility.getTerrainInstantiationFromWidthAndHeightMessage(this)));
+        log.fine(EventUtility.getTerrainInstantiationFromWidthAndHeightMessage(this));
     }
 
-    //REQUIRES: terrain.size >= MIN_WIDTH and terrain[0].size >= MIN_HEIGHT
-    //EFFECTS : Constructs a new map, entirely of plain tiles, with the given height and width specifications
+    /**
+     * Constructs a new map with the given specifications.
+     *
+     * @param name        Name for new Terrain
+     * @param terrainTile 2D TerrainTile array of new Terrain. Width and Height of map must exceed
+     *                    MIN_WIDTH and MIN_HEIGHT, respectively
+     * @param units       List of units on the terrain
+     */
+
+    // TODO ADD EXCEPTION FOR INSUFFICIENT HEIGHT+WIDTH
     public Terrain(String name, TerrainTile[][] terrainTile, UnitList units) {
         this.name = name;
         this.terrainTile = terrainTile;
         this.units = units;
-        EventLog.getInstance().logEvent(new Event(
-                EventUtility.getTerrainInstantiationFromExistingTerrainMessage(this)));
+        log.fine(EventUtility.getTerrainInstantiationFromExistingTerrainMessage(this));
     }
 
-    //EFFECTS: Sets all tiles in the terrain array to plain.
+    /**
+     * Sets all tiles in the terrain array to plain.
+     *
+     * @param map The terrain array in question
+     */
     private static void setAllTerrainToPlain(TerrainTile[][] map) {
         int width = map.length;
         int height = map[0].length;
@@ -51,31 +73,46 @@ public class Terrain implements Writable {
                 map[i][j] = TerrainTile.PLAIN;
             }
         }
-        EventLog.getInstance().logEvent(new Event(EventUtility.getSetAllToPlainMessage()));
+        log.fine(EventUtility.getSetAllToPlainMessage());
     }
 
-    // EFFECTS: Returns the width of the map
+    /**
+     * Returns the width of the map.
+     */
     public int getWidth() {
         return terrainTile.length;
     }
 
-    // EFFECTS: Returns the height of the map
+    /**
+     * Returns the height of the map.
+     */
     public int getHeight() {
         return terrainTile[0].length;
     }
 
-    // EFFECTS: Returns the tile type
+    /**
+     * Returns the tile type.
+     */
     public TerrainTile getTileType(int x, int y) {
         return terrainTile[x][y];
     }
 
-    // EFFECTS: Returns the name of the map
+    /**
+     * Returns the name of the map.
+     */
     public String getName() {
         return name;
     }
 
-    // REQUIRES: 0 <= x < map.getWidth(), 0 <= y < this.getHeight()
-    // EFFECTS: Checks if there is a unit at the given position
+    /**
+     * Checks if there is a unit at the given position.
+     *
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @return true if the position is unoccupied, false otherwise.
+     */
+
+    //TODO Add OOB Exception
     private boolean isPositionUnoccupied(int x, int y) {
         for (Unit unit : units) {
             if (unit.getX() == x && unit.getY() == y) {
@@ -85,10 +122,14 @@ public class Terrain implements Writable {
         return true;
     }
 
-    // REQUIRES: 0 <= x < map.getWidth(), 0 <= y < this.getHeight()
-    // MODIFIES: this
-    // EFFECTS: Moves the given unit to the given coordinates and returns true,
-    //          does nothing and returns false if new coordinates are occupied.
+    /**
+     * Moves the given unit to the given coordinates.
+     *
+     * @param unit The unit in question
+     * @param x    The new X position
+     * @param y    The new Y position
+     * @return If the move was successful
+     */
     public boolean moveUnit(Unit unit, int x, int y) {
         if (isPositionUnoccupied(x, y)) {
             unit.move(x, y);
@@ -98,29 +139,35 @@ public class Terrain implements Writable {
         }
     }
 
-    // MODIFIES: this
-    // EFFECTS: Adds unit to unit list and returns true if its tile is unoccupied, returns false otherwise.
+    /**
+     * Adds unit to unit list and returns true if its tile is unoccupied, returns false otherwise.
+     *
+     * @param unit The unit to be added
+     */
     public boolean addUnit(Unit unit) {
         int unitX = unit.getX();
         int unitY = unit.getY();
-        if (unitX < 0 || unitX >= getWidth() || unitY < 0 || unitY >= getHeight()
-                || !isPositionUnoccupied(unit.getX(), unit.getY())) {
+        if (unitX < 0 || unitX >= getWidth() || unitY < 0 || unitY >= getHeight() || !isPositionUnoccupied(unit.getX(), unit.getY())) {
             return false;
         } else {
             units.add(unit);
-            EventLog.getInstance().logEvent(new Event(EventUtility.getAddUnitMessage(unitX, unitY)));
+            log.fine(EventUtility.getAddUnitMessage(unitX, unitY));
             return true;
         }
     }
 
-    // REQUIRES: 0 <= x < map.getWidth(), 0 <= y < this.getHeight()
-    // MODIFIES: this
-    // EFFECTS : If there is a unit at (x, y), removes them. Does nothing if no unit is at the position
+    /**
+     * If there is a unit at (x, y), removes them.
+     *
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @return True there was a unit at the given position, false otherwise
+     */
     public boolean deleteUnit(int x, int y) {
         for (Unit unit : units) {
             if (unit.getX() == x && unit.getY() == y) {
                 units.remove(unit);
-                EventLog.getInstance().logEvent(new Event(EventUtility.getRemoveUnitMessage(x, y)));
+                log.fine(EventUtility.getRemoveUnitMessage(x, y));
                 return true;
             }
         }
@@ -136,8 +183,7 @@ public class Terrain implements Writable {
             return false;
         }
         Terrain terrain = (Terrain) o;
-        return name.equals(terrain.name)
-                && Arrays.deepEquals(terrainTile, terrain.terrainTile) && units.equals(terrain.units);
+        return name.equals(terrain.name) && Arrays.deepEquals(terrainTile, terrain.terrainTile) && units.equals(terrain.units);
     }
 
     @Override
@@ -145,8 +191,13 @@ public class Terrain implements Writable {
         return Objects.hash(name);
     }
 
-    // REQUIRES: 0 <= x < map.getWidth(), 0 <= y < this.getHeight()
-    // EFFECTS : If there is a unit at (x, y), returns them. Returns null if no unit is at the position
+    /**
+     * Returns the unit at the given coordinates
+     *
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @return The unit at the given coordinates, or null if no such unit exists
+     */
     public Unit getUnit(int x, int y) {
         for (Unit unit : units) {
             if (x == unit.getX() && y == unit.getY()) {
@@ -156,16 +207,24 @@ public class Terrain implements Writable {
         return null;
     }
 
-    // MODIFIES: this
-    // EFFECTS: renames the map.
+    /**
+     * Renames the Terrain
+     *
+     * @param newName The new name for the map
+     */
     public void rename(String newName) {
         this.name = newName;
-        EventLog.getInstance().logEvent(new Event(EventUtility.getRenameMessage(newName)));
+        log.fine(EventUtility.getRenameMessage(newName));
     }
 
-    // MODIFIES: this
-    // REQUIRES: width >= MIN_WIDTH and height >= MIN_HEIGHT
-    // EFFECTS : resizes the map to match the given parameters
+    /**
+     * Resizes the map to match the given parameters
+     *
+     * @param width  New width of Terrain. Must be greater than MIN_WIDTH
+     * @param height New height of Terrain. Must be greater than MIN_HEIGHT
+     */
+
+    //TODO Add OOB Exception
     public void resize(int width, int height) {
         TerrainTile[][] newTerrainTile = new TerrainTile[width][height];
         TerrainTile[][] oldTerrainTile = this.terrainTile;
@@ -173,17 +232,17 @@ public class Terrain implements Writable {
         int minWidth = Math.min(this.getWidth(), width);
         int minHeight = Math.min(this.getHeight(), height);
         for (int i = 0; i < minWidth; i++) {
-            for (int j = 0; j < minHeight; j++) {
-                newTerrainTile[i][j] = oldTerrainTile[i][j];
-            }
+            if (minHeight >= 0)
+                System.arraycopy(oldTerrainTile[i], 0, newTerrainTile[i], 0, minHeight);
         }
         this.terrainTile = newTerrainTile;
         handleUnits();
-        EventLog.getInstance().logEvent(new Event(EventUtility.getResizeMessage(width, height)));
+        log.fine(EventUtility.getResizeMessage(width, height));
     }
 
-    // MODIFIES: this
-    // EFFECTS : removes units outside the bounds of the map
+    /**
+     * Removes units outside the bounds of the map
+     */
     private void handleUnits() {
         int i = 0;
         while (i < units.size()) {
@@ -196,13 +255,18 @@ public class Terrain implements Writable {
         }
     }
 
-    // MODIFIES: this
-    // EFFECTS : changes the terrain at the given coordinates to the new type if tile is in bounds and returns true,
-    //           returns false otherwise
+    /**
+     * Changes the terrain tile at the given coordinates to the new type if tile is in bounds and returns true,
+     * returns false otherwise
+     *
+     * @param newTerrainTypeTile The new terrain tile type
+     * @param x                  X coordinate
+     * @param y                  Y coordinate
+     */
     public boolean setTile(TerrainTile newTerrainTypeTile, int x, int y) {
         if (0 <= x && x < getWidth() && 0 <= y && y < getHeight() && terrainTile[x][y] != newTerrainTypeTile) {
             terrainTile[x][y] = newTerrainTypeTile;
-            EventLog.getInstance().logEvent(new Event(EventUtility.getSetTileMessage(newTerrainTypeTile, x, y)));
+            log.fine(EventUtility.getSetTileMessage(newTerrainTypeTile, x, y));
             return true;
 
         } else {
@@ -210,6 +274,11 @@ public class Terrain implements Writable {
         }
     }
 
+    /**
+     * Returns all units on the terrain
+     *
+     * @return The list of all units
+     */
     public List<Unit> getUnits() {
         return units;
     }
@@ -223,11 +292,15 @@ public class Terrain implements Writable {
         mapJson.put("name", this.name);
         mapJson.put("terrainFull", columnsToJson());
         mapJson.put("units", units.toJson());
-        EventLog.getInstance().logEvent(new Event("Saved terrain " + name + " to JSON"));
+        log.fine("Saved terrain " + name + " to JSON");
         return mapJson;
     }
 
-    // EFFECTS: Transforms all columns of a map into a JSON array
+    /**
+     * Transforms all columns of a map into a JSON array
+     *
+     * @return The JSON array of columns
+     */
     private JSONArray columnsToJson() {
         JSONArray result = new JSONArray();
         for (TerrainTile[] terrainTileList : this.terrainTile) {
@@ -236,7 +309,11 @@ public class Terrain implements Writable {
         return result;
     }
 
-    // EFFECTS: Transforms an individual column into a JSON array
+    /**
+     * Transforms an individual column into a JSON array
+     *
+     * @return A JSON array representing one column of terrain
+     */
     private static JSONArray columnToJson(TerrainTile[] terrainTileList) {
         JSONArray result = new JSONArray();
         for (TerrainTile terrainTile : terrainTileList) {
@@ -245,7 +322,11 @@ public class Terrain implements Writable {
         return result;
     }
 
-    // EFFECTS: Transforms a tile into a JSON object
+    /**
+     * Transforms a tile into a JSON object
+     *
+     * @return A JSON object representing a terrain tile
+     */
     private static JSONObject terrainToJson(TerrainTile terrainTile) {
         JSONObject result = new JSONObject();
         result.put("terrain", terrainTile);

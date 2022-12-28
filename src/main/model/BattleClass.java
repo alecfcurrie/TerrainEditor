@@ -18,7 +18,11 @@ public enum BattleClass {
 
     private String name;
 
-    // EFFECTS: Constructs a BattleClass where the toString() method will return the given name
+    /**
+     * Constructs a BattleClass where the toString() method will return the given name
+     *
+     * @param name The colloquial name of the battle class
+     */
     BattleClass(String name) {
         this.name = name;
     }
