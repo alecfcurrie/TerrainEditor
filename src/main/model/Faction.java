@@ -1,6 +1,8 @@
 package model;
 
-// Represents a unit faction
+/**
+ * Represents a unit faction
+ */
 public enum Faction {
     PLAYER("Player"),
     ENEMY("Enemy"),
@@ -8,7 +10,11 @@ public enum Faction {
 
     private String name;
 
-    // EFFECTS: Constructs a Faction where the toString() method will return the given name
+    /**
+     * Constructs a Faction where the toString() method will return the given name
+     *
+     * @param name the colloquial name of the faction
+     */
     Faction(String name) {
         this.name = name;
     }

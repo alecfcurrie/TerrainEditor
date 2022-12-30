@@ -1,6 +1,8 @@
 package ui;
 
-// An enumeration representing an edit mode for the TerrainBuilderFrame
+/**
+ * An enumeration representing an edit mode for the TerrainBuilderFrame
+ */
 public enum EditMode {
     PLACE_PLAIN,
     PLACE_MOUNTAIN,
@@ -15,7 +17,11 @@ public enum EditMode {
     DELETE_UNIT;
 
 
-    // EFFECTS: Returns true if the given string is a mode, returns false otherwise.
+    /**
+     * Returns true if the given string is a mode, returns false otherwise.
+     *
+     * @param s the string to be compared
+     */
     public static boolean isMode(String s) {
         try {
             EditMode.valueOf(s);

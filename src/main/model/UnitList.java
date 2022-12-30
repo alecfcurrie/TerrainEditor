@@ -5,9 +5,16 @@ import org.json.JSONArray;
 
 import java.util.LinkedList;
 
+/**
+ * Represents a list of units
+ */
 public class UnitList extends LinkedList<Unit> {
 
-    // EFFECTS: Transforms the units array into a JSON array
+    /**
+     * Transforms the unit list into a JSONArray
+     *
+     * @return the JSONArray representation of the UnitList
+     */
     public JSONArray toJson() {
         JSONArray result = new JSONArray();
 

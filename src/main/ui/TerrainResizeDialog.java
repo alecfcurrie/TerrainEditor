@@ -5,7 +5,9 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 
-// A class representing a dialog that allows the user to resize the given map
+/**
+ * A class representing a dialog that allows the user to resize the given map
+ */
 public class TerrainResizeDialog extends JDialog implements ActionListener {
 
     public static final String CANCEL = "Cancel";
@@ -15,7 +17,11 @@ public class TerrainResizeDialog extends JDialog implements ActionListener {
 
     private boolean cancelled = true;
 
-    // EFFECTS: Constructs a new MapResizeDialog
+    /**
+     * Constructs a new MapResizeDialog
+     *
+     * @param owner the owner of the dialog
+     */
     public TerrainResizeDialog(JFrame owner) {
         super(owner, "Map Resize Tool");
         setModal(true);
@@ -27,8 +33,9 @@ public class TerrainResizeDialog extends JDialog implements ActionListener {
         setLocationRelativeTo(owner);
     }
 
-    // MODIFIES: this
-    // EFFECTS: Initializes all the components of the dialog
+    /**
+     * Initializes all the components of the dialog
+     */
     private void initializeComponents() {
         JPanel inputPanel = new JPanel(new GridLayout(2, 2));
         newWidth = new JTextField();
@@ -50,7 +57,11 @@ public class TerrainResizeDialog extends JDialog implements ActionListener {
         add(buttonPanel);
     }
 
-    // EFFECTS: Handles user input when they close the application
+    /**
+     * Handles user input when they close the application
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals(OK)) {
@@ -59,18 +70,31 @@ public class TerrainResizeDialog extends JDialog implements ActionListener {
         dispose();
     }
 
-    // EFFECTS: Parses and returns the width entered by the user. Throws NumberFormatException if it fails to parse
-    //          the input
+    /**
+     * Parses and returns the width entered by the user.
+     *
+     * @return the user's inputted width
+     * @throws NumberFormatException if the user did not enter a number
+     */
     public int getNewWidth() throws NumberFormatException {
         return Integer.parseInt(newWidth.getText());
     }
 
-    // EFFECTS: Parses and returns the height entered by the user. Throws NumberFormatException if it fails to parse
-    //          the input
+    /**
+     * Parses and returns the height entered by the user.
+     *
+     * @return the user's inputted height
+     * @throws NumberFormatException if the user did not enter a number
+     */
     public int getNewHeight() throws NumberFormatException {
         return Integer.parseInt(newHeight.getText());
     }
 
+    /**
+     * Returns whether the user cancelled the dialog
+     *
+     * @return if the dialog was cancelled
+     */
     public boolean isCancelled() {
         return cancelled;
     }

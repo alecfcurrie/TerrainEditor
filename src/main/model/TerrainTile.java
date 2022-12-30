@@ -1,6 +1,8 @@
 package model;
 
-// Represents a tile of terrain on a map.
+/**
+ * Represents a tile of terrain on a map.
+ */
 public enum TerrainTile {
     PLAIN,
     MOUNTAIN,

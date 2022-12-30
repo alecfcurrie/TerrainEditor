@@ -9,7 +9,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-// A class representing a dialog to edit units
+/**
+ * A class representing a dialog to edit units
+ */
 public class UnitEditorDialog extends JDialog implements ActionListener {
 
     public static final String CANCEL = "Cancel";
@@ -22,7 +24,13 @@ public class UnitEditorDialog extends JDialog implements ActionListener {
 
     private boolean cancelled = true;
 
-    // EFFECTS: Constructs a UnitEditor dialog with the given faction and battle class initially selected
+    /**
+     * Constructs a UnitEditor dialog with the given faction and battle class initially selected
+     *
+     * @param owner owner of the dialog
+     * @param faction initial Faction selection
+     * @param battleClass initial BattleClass selection
+     */
     public UnitEditorDialog(JFrame owner, Faction faction, BattleClass battleClass) {
         super(owner, "Unit Editor");
         setModal(true);
@@ -34,11 +42,21 @@ public class UnitEditorDialog extends JDialog implements ActionListener {
         setLocationRelativeTo(owner);
     }
 
+    /**
+     * Returns whether the dialog was cancelled by the user
+     *
+     * @return if the dialog was cancelled
+     */
     public boolean isCancelled() {
         return cancelled;
     }
 
-    // EFFECTS: Initializes all components of the dialog
+    /**
+     * Initializes all components of the dialog
+     *
+     * @param faction the initial Faction selection
+     * @param battleClass the initial BattleClass selection
+     */
     private void initializeComponents(Faction faction, BattleClass battleClass) {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JPanel dropdownPanel = new JPanel(new GridLayout(2, 2));
@@ -62,17 +80,30 @@ public class UnitEditorDialog extends JDialog implements ActionListener {
         add(buttonPanel);
     }
 
+    /**
+     * Returns the selected Faction
+     *
+     * @return the selected Faction
+     */
     public Faction getFaction() {
         return faction;
     }
 
+    /**
+     * Returns the selected BattleClass
+     *
+     * @return the selected BattleClass
+     */
     public BattleClass getBattleClass() {
         return battleClass;
     }
 
-    // MODIFIES: this
-    // EFFECTS: Handles user input when closing the dialog
-    // Code modeled after http://www2.hawaii.edu/~takebaya/ics111/jdialog/jdialog.html
+    /**
+     * Handles user input when closing the dialog
+     * Code modeled after http://www2.hawaii.edu/~takebaya/ics111/jdialog/jdialog.html
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals(OK)) {

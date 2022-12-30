@@ -2,7 +2,6 @@ package model;
 
 import org.junit.jupiter.api.*;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,11 +14,12 @@ public class TestTerrain {
     Terrain testTerrain1;
     Terrain testTerrain2;
 
+    int testTerrain1InitialWidth;
+    int testTerrain1InitialHeight;
+
     Unit mars;
     Unit alm;
     Unit celica;
-
-    EventLog el = EventLog.getInstance();
 
     @BeforeEach
     void setup() {
@@ -28,12 +28,18 @@ public class TestTerrain {
         mars = new Unit(Faction.PLAYER, BattleClass.THIEF, 5, 2);
         alm = new Unit(Faction.ENEMY, BattleClass.LORD, 6, 7);
         celica = new Unit(Faction.ALLY, BattleClass.CAVALIER, 7, 5);
-        el.clear();
+
+        testTerrain1InitialWidth = testTerrain1.getWidth();
+        testTerrain1InitialHeight = testTerrain1.getHeight();
     }
 
     private void initializeMaps() {
-        testTerrain1 = new Terrain("Chapter 1", 15, 10);
-        testTerrain2 = new Terrain("Chapter 2", 20, 30);
+        try {
+            testTerrain1 = new Terrain("Chapter 1", 15, 10);
+            testTerrain2 = new Terrain("Chapter 2", 20, 30);
+        } catch (IllegalArgumentException e){
+            fail("Unexpected instantiation failure");
+        }
     }
 
     public static void allTilesPlain(Terrain terrain) {
@@ -65,44 +71,66 @@ public class TestTerrain {
     }
 
     @Test
-    void testEventLogInitialization() {
-        initializeMaps();
-        Iterator<Event> eli = el.iterator();
-        assertEquals(EventUtility.getClearLogMessage(), eli.next().getDescription());
-        assertEquals(EventUtility.getSetAllToPlainMessage(), eli.next().getDescription());
-        assertEquals(EventUtility.getTerrainInstantiationFromWidthAndHeightMessage(testTerrain1),
-                eli.next().getDescription());
-        assertEquals(EventUtility.getSetAllToPlainMessage(), eli.next().getDescription());
-        assertEquals(EventUtility.getTerrainInstantiationFromWidthAndHeightMessage(testTerrain2),
-                eli.next().getDescription());
-    }
-
-    @Test
     void testSecondConstructor() {
         UnitList units = new UnitList();
         units.add(mars);
         TerrainTile[][] newTerrainTile = new TerrainTile[15][10];
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 10; j++) {
+        setAllMountain(newTerrainTile);
+        Terrain constructor2Test;
+        try {
+            constructor2Test = new Terrain("Secondo", newTerrainTile, units);
+            assertEquals("Secondo", constructor2Test.getName());
+            for (int i = 0; i < 15; i++) {
+                for (int j = 0; j < 10; j++) {
+                    assertEquals(TerrainTile.MOUNTAIN, constructor2Test.getTileType(i, j));
+                }
+            }
+            List<Unit> constructedUnits = constructor2Test.getUnits();
+            assertEquals(1, constructedUnits.size());
+            assertEquals(mars, constructedUnits.get(0));
+        } catch (IllegalArgumentException e){
+            fail("Unexpected instantiation failure");
+        }
+    }
+
+    private static void setAllMountain(TerrainTile[][] newTerrainTile) {
+        int width = newTerrainTile.length;
+        int height = newTerrainTile[0].length;
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 newTerrainTile[i][j] = TerrainTile.MOUNTAIN;
             }
         }
-        Terrain constructor2Test = new Terrain("Secondo", newTerrainTile, units);
-        //Model tests
-        assertEquals("Secondo", constructor2Test.getName());
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 10; j++) {
-                assertEquals(TerrainTile.MOUNTAIN, constructor2Test.getTileType(i, j));
-            }
+    }
+
+    @Test
+    void testIllegalTerrains() {
+        testIllegalTerrainFirstConstructor(10, 5);
+        testIllegalTerrainFirstConstructor(20, 5);
+        testIllegalTerrainFirstConstructor(10, 20);
+        testIllegalTerrainSecondConstructor(10,5);
+        testIllegalTerrainSecondConstructor(20,5);
+        testIllegalTerrainSecondConstructor(10,20);
+    }
+
+    private static void testIllegalTerrainFirstConstructor(int width, int height) {
+        try {
+            Terrain t = new Terrain("Test", width, height);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Pass
         }
-        List<Unit> constructedUnits = constructor2Test.getUnits();
-        assertEquals(1, constructedUnits.size());
-        assertEquals(mars, constructedUnits.get(0));
-        //Event log tests
-        Iterator<Event> eli = el.iterator();
-        assertEquals(EventUtility.getClearLogMessage(), eli.next().getDescription());
-        assertEquals(EventUtility.getTerrainInstantiationFromExistingTerrainMessage(constructor2Test),
-                eli.next().getDescription());
+    }
+
+    private static void testIllegalTerrainSecondConstructor(int width, int height) {
+        TerrainTile[][] terrainTiles = new TerrainTile[width][height];
+        setAllMountain(terrainTiles);
+        try {
+            Terrain t = new Terrain("Test", terrainTiles, null);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // Pass
+        }
     }
 
     @Test
@@ -117,13 +145,6 @@ public class TestTerrain {
         assertEquals(newName2, testTerrain2.getName());
         testTerrain1.rename(newName3);
         assertEquals(newName3, testTerrain1.getName());
-        //Event log tests
-        Iterator<Event> eli = el.iterator();
-        assertEquals(EventUtility.getClearLogMessage(), eli.next().getDescription());
-        assertEquals(EventUtility.getRenameMessage(newName1), eli.next().getDescription());
-        assertEquals(EventUtility.getRenameMessage(newName2), eli.next().getDescription());
-        assertEquals(EventUtility.getRenameMessage(newName3), eli.next().getDescription());
-        assertFalse(eli.hasNext());
     }
 
     @Test
@@ -132,11 +153,6 @@ public class TestTerrain {
         int x = 5;
         int y = 4;
         assertTrue(testTerrain1.setTile(terrainTile, x, y));
-        // Event log tests
-        Iterator<Event> eli = el.iterator();
-        assertEquals(EventUtility.getClearLogMessage(), eli.next().getDescription());
-        assertEquals(EventUtility.getSetTileMessage(terrainTile, x, y), eli.next().getDescription());
-        // Model tests
         int width = testTerrain1.getWidth();
         int height = testTerrain1.getHeight();
         for (int i = 0; i < width; i++) {
@@ -149,10 +165,6 @@ public class TestTerrain {
             }
         }
     }
-
-    //MODIFIES: this
-    //REQUIRES: testMap1 must be initialized
-    //EFFECTS : modifies the terrain of testMap1
     private void modifyTiles() {
         assertTrue(testTerrain1.setTile(TerrainTile.WATER, 0, 3));
         assertTrue(testTerrain1.setTile(TerrainTile.WATER, 1, 3));
@@ -183,17 +195,10 @@ public class TestTerrain {
     void testResizeNoChange() {
         int width = 20;
         int height = 25;
-        //Model tests
         testTerrain1.resize(width, height);
         assertEquals(width, testTerrain1.getWidth());
         assertEquals(height, testTerrain1.getHeight());
         allTilesPlain(testTerrain1);
-        // Event log tests
-        Iterator<Event> eli = el.iterator();
-        assertEquals(EventUtility.getClearLogMessage(), eli.next().getDescription());
-        assertEquals(EventUtility.getSetAllToPlainMessage(), eli.next().getDescription());
-        assertEquals(EventUtility.getResizeMessage(width, height), eli.next().getDescription());
-        assertFalse(eli.hasNext());
     }
 
     @Test
@@ -276,13 +281,25 @@ public class TestTerrain {
     }
 
     @Test
+    void testIllegalResizes() {
+        testIllegalResize(10, 5);
+        testIllegalResize(5, 20);
+        testIllegalResize(20, 5);
+    }
+
+    private void testIllegalResize(int width, int height) {
+        try {
+            testTerrain1.resize(width, height);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            assertEquals(testTerrain1InitialHeight, testTerrain1.getHeight());
+            assertEquals(testTerrain1InitialWidth, testTerrain1.getWidth());
+        }
+    }
+
+    @Test
     void testAddUnit() {
         assertTrue(testTerrain1.addUnit(mars));
-        // Event log tests
-        Iterator<Event> eli = el.iterator();
-        assertEquals(EventUtility.getClearLogMessage(), eli.next().getDescription());
-        assertEquals(EventUtility.getAddUnitMessage(mars.getX(), mars.getY()), eli.next().getDescription());
-        // Model tests
         List<Unit> units = testTerrain1.getUnits();
         assertEquals(1, units.size());
         assertEquals(mars, units.get(0));
@@ -305,13 +322,7 @@ public class TestTerrain {
     @Test
     void testRemoveUnit() {
         testTerrain1.addUnit(mars);
-        el.clear();
         assertTrue(testTerrain1.deleteUnit(mars.getX(), mars.getY()));
-        // Event log tests
-        Iterator<Event> eli = el.iterator();
-        assertEquals(EventUtility.getClearLogMessage(), eli.next().getDescription());
-        assertEquals(EventUtility.getRemoveUnitMessage(mars.getX(), mars.getY()), eli.next().getDescription());
-        //Model tests
         List<Unit> units = testTerrain1.getUnits();
         assertEquals(0, units.size());
         testTerrain1.addUnit(alm);
@@ -327,12 +338,7 @@ public class TestTerrain {
     void testRemoveUnoccupiedTile() {
         testTerrain1.addUnit(mars);
         assertFalse(testTerrain1.deleteUnit(mars.getX() - 1, mars.getY() - 1));
-        // Event log tests
-        el.clear();
-        Iterator<Event> eli = el.iterator();
-        assertEquals(EventUtility.getClearLogMessage(), eli.next().getDescription());
-        assertFalse(eli.hasNext());
-        // Model tests
+
         List<Unit> units = testTerrain1.getUnits();
         assertEquals(1, units.size());
         assertEquals(mars, units.get(0));
@@ -379,23 +385,6 @@ public class TestTerrain {
         assertNull(testTerrain1.getUnit(mars.getX() + 1, mars.getY() + 1));
         assertNull(testTerrain1.getUnit(mars.getX(), mars.getY() + 1));
         assertNull(testTerrain1.getUnit(mars.getX() + 1, mars.getY()));
-    }
-
-    @Test
-    void testMoveUnit() {
-        testTerrain1.addUnit(mars);
-        assertTrue(testTerrain1.moveUnit(mars, 10, 9));
-        assertEquals(10, mars.getX());
-        assertEquals(9, mars.getY());
-    }
-
-    @Test
-    void testMoveUnitBlocked() {
-        testTerrain1.addUnit(mars);
-        testTerrain1.addUnit(alm);
-        assertFalse(testTerrain1.moveUnit(mars, alm.getX(), alm.getY()));
-        assertEquals(5, mars.getX());
-        assertEquals(2, mars.getY());
     }
 
     @Test

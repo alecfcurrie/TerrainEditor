@@ -1,7 +1,9 @@
 package model;
 
-// Represents a medieval-era battle class.
-// All methods modeled after https://stackoverflow.com/questions/2497521/implementing-tostring-on-java-enums
+/**
+ * Represents a medieval-era battle class.
+ * All methods modeled after https://stackoverflow.com/questions/2497521/implementing-tostring-on-java-enums
+ */
 public enum BattleClass {
     LORD("Lord"),
     SOLDIER("Soldier"),
@@ -21,7 +23,7 @@ public enum BattleClass {
     /**
      * Constructs a BattleClass where the toString() method will return the given name
      *
-     * @param name The colloquial name of the battle class
+     * @param name the colloquial name of the battle class
      */
     BattleClass(String name) {
         this.name = name;

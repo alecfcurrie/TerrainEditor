@@ -25,17 +25,21 @@ public class Terrain implements Writable {
 
     private final UnitList units;
 
+    private static final String BELOW_MIN_MSG = "Insufficient width or height";
+
 
     /**
      * Constructs a new map, entirely of plain tiles, with the given height and width specifications.
      *
-     * @param name   Name of the Terrain
-     * @param width  Width of Terrain. Must be greater than MIN_WIDTH
-     * @param height Height of Terrain. Must be greater than MIN_HEIGHT
+     * @param name   name of the Terrain
+     * @param width  width of Terrain. Must be greater than MIN_WIDTH
+     * @param height height of Terrain. Must be greater than MIN_HEIGHT
+     * @throws IllegalArgumentException if width or height are insufficient
      */
-
-    // TODO ADD EXCEPTION FOR INSUFFICIENT HEIGHT+WIDTH
-    public Terrain(String name, int width, int height) {
+    public Terrain(String name, int width, int height) throws IllegalArgumentException {
+        if (width < MIN_WIDTH || height < MIN_HEIGHT) {
+            throw new IllegalArgumentException(BELOW_MIN_MSG);
+        }
         this.name = name;
         this.terrainTile = new TerrainTile[width][height];
         setAllTerrainToPlain(terrainTile);
@@ -46,14 +50,16 @@ public class Terrain implements Writable {
     /**
      * Constructs a new map with the given specifications.
      *
-     * @param name        Name for new Terrain
+     * @param name        name for new Terrain
      * @param terrainTile 2D TerrainTile array of new Terrain. Width and Height of map must exceed
      *                    MIN_WIDTH and MIN_HEIGHT, respectively
-     * @param units       List of units on the terrain
+     * @param units       list of units on the terrain
+     * @throws IllegalArgumentException if either width or height are insufficient
      */
-
-    // TODO ADD EXCEPTION FOR INSUFFICIENT HEIGHT+WIDTH
     public Terrain(String name, TerrainTile[][] terrainTile, UnitList units) {
+        if (terrainTile.length < MIN_WIDTH || terrainTile[0].length < MIN_HEIGHT) {
+            throw new IllegalArgumentException(BELOW_MIN_MSG);
+        }
         this.name = name;
         this.terrainTile = terrainTile;
         this.units = units;
@@ -63,7 +69,7 @@ public class Terrain implements Writable {
     /**
      * Sets all tiles in the terrain array to plain.
      *
-     * @param map The terrain array in question
+     * @param map the TerrainTile array in question
      */
     private static void setAllTerrainToPlain(TerrainTile[][] map) {
         int width = map.length;
@@ -107,12 +113,10 @@ public class Terrain implements Writable {
     /**
      * Checks if there is a unit at the given position.
      *
-     * @param x X coordinate
-     * @param y Y coordinate
+     * @param x x coordinate
+     * @param y y coordinate
      * @return true if the position is unoccupied, false otherwise.
      */
-
-    //TODO Add OOB Exception
     private boolean isPositionUnoccupied(int x, int y) {
         for (Unit unit : units) {
             if (unit.getX() == x && unit.getY() == y) {
@@ -123,26 +127,9 @@ public class Terrain implements Writable {
     }
 
     /**
-     * Moves the given unit to the given coordinates.
-     *
-     * @param unit The unit in question
-     * @param x    The new X position
-     * @param y    The new Y position
-     * @return If the move was successful
-     */
-    public boolean moveUnit(Unit unit, int x, int y) {
-        if (isPositionUnoccupied(x, y)) {
-            unit.move(x, y);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Adds unit to unit list and returns true if its tile is unoccupied, returns false otherwise.
      *
-     * @param unit The unit to be added
+     * @param unit the unit to be added
      */
     public boolean addUnit(Unit unit) {
         int unitX = unit.getX();
@@ -159,9 +146,9 @@ public class Terrain implements Writable {
     /**
      * If there is a unit at (x, y), removes them.
      *
-     * @param x X coordinate
-     * @param y Y coordinate
-     * @return True there was a unit at the given position, false otherwise
+     * @param x x coordinate
+     * @param y y coordinate
+     * @return true there was a unit at the given position, false otherwise
      */
     public boolean deleteUnit(int x, int y) {
         for (Unit unit : units) {
@@ -194,9 +181,9 @@ public class Terrain implements Writable {
     /**
      * Returns the unit at the given coordinates
      *
-     * @param x X coordinate
-     * @param y Y coordinate
-     * @return The unit at the given coordinates, or null if no such unit exists
+     * @param x x coordinate
+     * @param y y coordinate
+     * @return the unit at the given coordinates, or null if no such unit exists
      */
     public Unit getUnit(int x, int y) {
         for (Unit unit : units) {
@@ -210,7 +197,7 @@ public class Terrain implements Writable {
     /**
      * Renames the Terrain
      *
-     * @param newName The new name for the map
+     * @param newName the new name for this
      */
     public void rename(String newName) {
         this.name = newName;
@@ -220,12 +207,14 @@ public class Terrain implements Writable {
     /**
      * Resizes the map to match the given parameters
      *
-     * @param width  New width of Terrain. Must be greater than MIN_WIDTH
-     * @param height New height of Terrain. Must be greater than MIN_HEIGHT
+     * @param width  new width of Terrain. Must be greater than MIN_WIDTH
+     * @param height new height of Terrain. Must be greater than MIN_HEIGHT
+     * @throws IllegalArgumentException if width or height is too small
      */
-
-    //TODO Add OOB Exception
-    public void resize(int width, int height) {
+    public void resize(int width, int height) throws IllegalArgumentException{
+        if (width < MIN_WIDTH || height < MIN_HEIGHT) {
+            throw new IllegalArgumentException(BELOW_MIN_MSG);
+        }
         TerrainTile[][] newTerrainTile = new TerrainTile[width][height];
         TerrainTile[][] oldTerrainTile = this.terrainTile;
         setAllTerrainToPlain(newTerrainTile);
@@ -259,9 +248,9 @@ public class Terrain implements Writable {
      * Changes the terrain tile at the given coordinates to the new type if tile is in bounds and returns true,
      * returns false otherwise
      *
-     * @param newTerrainTypeTile The new terrain tile type
-     * @param x                  X coordinate
-     * @param y                  Y coordinate
+     * @param newTerrainTypeTile the new terrain tile type
+     * @param x                  x coordinate
+     * @param y                  y coordinate
      */
     public boolean setTile(TerrainTile newTerrainTypeTile, int x, int y) {
         if (0 <= x && x < getWidth() && 0 <= y && y < getHeight() && terrainTile[x][y] != newTerrainTypeTile) {
@@ -277,7 +266,7 @@ public class Terrain implements Writable {
     /**
      * Returns all units on the terrain
      *
-     * @return The list of all units
+     * @return the list of all units
      */
     public List<Unit> getUnits() {
         return units;
@@ -299,7 +288,7 @@ public class Terrain implements Writable {
     /**
      * Transforms all columns of a map into a JSON array
      *
-     * @return The JSON array of columns
+     * @return the JSON array of columns
      */
     private JSONArray columnsToJson() {
         JSONArray result = new JSONArray();
@@ -312,7 +301,7 @@ public class Terrain implements Writable {
     /**
      * Transforms an individual column into a JSON array
      *
-     * @return A JSON array representing one column of terrain
+     * @return a JSON array representing one column of terrain
      */
     private static JSONArray columnToJson(TerrainTile[] terrainTileList) {
         JSONArray result = new JSONArray();
@@ -325,7 +314,7 @@ public class Terrain implements Writable {
     /**
      * Transforms a tile into a JSON object
      *
-     * @return A JSON object representing a terrain tile
+     * @return a JSON object representing a terrain tile
      */
     private static JSONObject terrainToJson(TerrainTile terrainTile) {
         JSONObject result = new JSONObject();

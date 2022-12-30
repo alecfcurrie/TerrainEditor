@@ -11,12 +11,18 @@ import java.util.List;
 
 import static ui.TerrainEditorFrame.IMAGE_SIZE;
 
-// Represents a panel that displays a Terrain object
+/**
+ * Represents a panel that displays a Terrain object
+ */
 class TerrainPanel extends JPanel {
 
     private TerrainEditorFrame owner;
 
-    // EFFECTS: Constructs a new TerrainBuilderFrame
+    /**
+     * Constructs a new TerrainPanel
+     *
+     * @param owner the owner of this
+     */
     public TerrainPanel(TerrainEditorFrame owner) {
         this.owner = owner;
 
@@ -35,8 +41,11 @@ class TerrainPanel extends JPanel {
         });
     }
 
-    // MODIFIES: this
-    // EFFECTS: Draws the owner's terrain on the panel
+    /**
+     * Draws the owner's terrain on the panel
+     *
+     * @param g graphics object that will draw the panel
+     */
     private void drawMap(Graphics g) {
         Terrain currentTerrain = owner.getCurrentTerrain();
         int width = currentTerrain.getWidth();
@@ -56,7 +65,13 @@ class TerrainPanel extends JPanel {
         }
     }
 
-    // EFFECTS: Handles a click on the map
+    /**
+     * Handles a click on the map
+     *
+     * @param x the screen x coordinate of the click
+     * @param y the screen y coordinate of the click
+     * @param dragged whether the click was dragged or not
+     */
     private void handleClick(int x, int y, boolean dragged) {
         int terrainX = x / IMAGE_SIZE;
         int terrainY = y / IMAGE_SIZE;

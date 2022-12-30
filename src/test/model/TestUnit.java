@@ -3,7 +3,6 @@ package model;
 import org.junit.jupiter.api.*;
 
 import java.awt.*;
-import java.util.Iterator;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,14 +14,11 @@ public class TestUnit {
     Unit enemyUnit;
     Unit allyUnit;
 
-    EventLog el = EventLog.getInstance();
-
     @BeforeEach
     void setup() {
         playerUnit = new Unit(Faction.PLAYER, BattleClass.LORD, 0, 0);
         enemyUnit = new Unit(Faction.ENEMY, BattleClass.SOLDIER, 1, 2);
         allyUnit = new Unit(Faction.ALLY, BattleClass.CAVALIER, 7, 3);
-        el.clear();
     }
 
     @Test
@@ -39,24 +35,10 @@ public class TestUnit {
     }
 
     @Test
-    void testEventLogInitialization() {
-        allyUnit = new Unit(Faction.ALLY, BattleClass.ARCHER, 7, 3);
-        Iterator<Event> eli = el.iterator();
-        assertEquals(EventUtility.getClearLogMessage(), eli.next().getDescription());
-        assertEquals(EventUtility.getUnitInstantiationMessage(allyUnit), eli.next().getDescription());
-        assertFalse(eli.hasNext());
-    }
-
-    @Test
     void testSetFaction() {
         Faction newFaction = Faction.ENEMY;
-        // Model tests
         playerUnit.setFaction(newFaction);
         assertEquals(newFaction, playerUnit.getFaction());
-        // Event log tests
-        Iterator<Event> eli = el.iterator();
-        assertEquals(EventUtility.getClearLogMessage(), eli.next().getDescription());
-        assertEquals(EventUtility.getFactionChangeMessage(playerUnit), eli.next().getDescription());
     }
 
     @Test
@@ -69,13 +51,8 @@ public class TestUnit {
     @Test
     void testSetClass() {
         BattleClass newBattleClass = BattleClass.MYRMIDON;
-        //Model tests
         playerUnit.setBattleClass(newBattleClass);
         assertEquals(newBattleClass, playerUnit.getBattleClass());
-        //Event log tests
-        Iterator<Event> eli = el.iterator();
-        assertEquals(EventUtility.getClearLogMessage(), eli.next().getDescription());
-        assertEquals(EventUtility.getBattleClassChangeMessage(playerUnit), eli.next().getDescription());
     }
 
     @Test
@@ -91,29 +68,6 @@ public class TestUnit {
         enemyUnit.setBattleClass(BattleClass.WYVERN_RIDER);
         assertEquals(BattleClass.WYVERN_RIDER, enemyUnit.getBattleClass());
         assertEquals(BattleClass.PEGASUS_KNIGHT, allyUnit.getBattleClass());
-    }
-
-    @Test
-    void testMove() {
-
-        int x = 4;
-        int y = 10;
-        //Model tests
-        allyUnit.move(x, y);
-        assertEquals(x, allyUnit.getX());
-        assertEquals(y, allyUnit.getY());
-        //Event log tests
-        Iterator<Event> eli = el.iterator();
-        assertEquals(EventUtility.getClearLogMessage(), eli.next().getDescription());
-        assertEquals(EventUtility.getMoveUnitMessage(x, y), eli.next().getDescription());
-    }
-
-    @Test
-    void testMoveMultiple() {
-        allyUnit.move(5, 11);
-        allyUnit.move(3, 6);
-        assertEquals(3, allyUnit.getX());
-        assertEquals(6, allyUnit.getY());
     }
 
     @Test

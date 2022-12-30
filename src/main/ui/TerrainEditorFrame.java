@@ -12,12 +12,15 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-// Represents a graphical interface to edit Terrain objects
+/**
+ * Represents a graphical interface to edit Terrain objects
+ */
 public class TerrainEditorFrame extends JFrame implements ActionListener {
 
     private static final Logger log = Logger.getLogger(TerrainEditorFrame.class.getName());
@@ -42,6 +45,7 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
     private static final int STARTUP_MAP_WIDTH = 20;
     private static final int STARTUP_MAP_HEIGHT = 15;
     public static final String APP_NAME = "Terrain Editor: ";
+    private static final String EXIT_AC = "EXIT";
 
     private Terrain currentTerrain;
     private TerrainPanel terrainPanel;
@@ -71,7 +75,9 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
     private static final FileNameExtensionFilter FILE_FILTER =
             new FileNameExtensionFilter(".json files", ".json");
 
-    // EFFECTS: Constructs a new TerrainBuilderFrame
+    /**
+     * Constructs a new TerrainBuilderFrame.
+     */
     public TerrainEditorFrame() {
         super("");
         try {
@@ -90,14 +96,32 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         setLocationRelativeTo(null);
         setVisible(true);
         setResizable(false);
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (UnsupportedLookAndFeelException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    /**
+     * Updates the window title to be app name + name of current Terrain
+     */
     private void updateWindowTitle() {
         setTitle(APP_NAME + currentTerrain.getName());
     }
 
-    // MODIFIES: this
-    // EFFECTS: Loads all required images, and throws IOException if there is a problem
+    /**
+     * Loads all required images
+     *
+     * @throws IOException if there is an issue loading images
+     */
     private void loadImages() throws IOException {
         plainImg = ImageIO.read(new File("./res/Plain.png"));
         forestImg = ImageIO.read(new File("./res/Forest.png"));
@@ -115,8 +139,9 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         allyImg = ImageIO.read(new File("./res/AllySoldierIcon.png"));
     }
 
-    // MODIFIES: this
-    // EFFECTS: Initializes all the variables for the TerrainEditorFrame
+    /**
+     * Initializes all the variables for the TerrainEditorFrame
+     */
     private void initializeVariables() {
         currentEditMode = EditMode.PLACE_PLAIN;
         currentTerrain = new Terrain(STARTUP_MAP_NAME, STARTUP_MAP_WIDTH, STARTUP_MAP_HEIGHT);
@@ -124,9 +149,11 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         battleClassToAdd = BattleClass.LORD;
     }
 
-    // MODIFIES: this
-    // EFFECTS: Handles user actions
-    @SuppressWarnings("methodlength")
+    /**
+     * Handles user actions
+     *
+     * @param e the event to be processed
+     */
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case SAVE_MAP:
@@ -147,6 +174,9 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
             case PLACE_UNIT:
                 handlePlaceUnitButton();
                 break;
+            case EXIT_AC:
+                // from https://stackoverflow.com/questions/1234912/how-to-programmatically-close-a-jframe
+                this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
             default:
                 if (EditMode.isMode(e.getActionCommand())) {
                     currentEditMode = EditMode.valueOf(e.getActionCommand());
@@ -155,8 +185,9 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         }
     }
 
-    // MODIFIES: this
-    // EFFECTS: Initializes the menu bar
+    /**
+     * Initializes the menu bar
+     */
     private void initializeMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = initializeFileMenu();
@@ -167,7 +198,11 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         menuBar.add(editMenu);
     }
 
-    // EFFECTS: Returns the initialized editMenu
+    /**
+     * Initializes the Edit menu
+     *
+     * @return the initialized Edit menu
+     */
     private JMenu initializeEditMenu() {
         JMenuItem menuItem;
         JMenu editMenu = new JMenu("Edit");
@@ -182,7 +217,11 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         return editMenu;
     }
 
-    // EFFECTS: Returns the initialized fileMenu
+    /**
+     * Initializes the File menu
+     *
+     * @return the initialized File menu
+     */
     private JMenu initializeFileMenu() {
         JMenu fileMenu = new JMenu("File");
         JMenuItem menuItem = new JMenuItem("New");
@@ -197,11 +236,18 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         menuItem.setActionCommand(SAVE_MAP);
         menuItem.addActionListener(this);
         fileMenu.add(menuItem);
+        fileMenu.addSeparator();
+        menuItem = new JMenuItem("Exit");
+        menuItem.setActionCommand(EXIT_AC);
+        menuItem.addActionListener(this);
+        fileMenu.add(menuItem);
+
         return fileMenu;
     }
 
-    // MODIFIES: this
-    // EFFECTS: Initializes the main layout
+    /**
+     * Initializes the main layout.
+     */
     private void initializeLayout() {
         this.setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         toolPanel = new JPanel(new FlowLayout());
@@ -211,8 +257,9 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         ((JPanel) getContentPane()).setBorder(new EmptyBorder(13, 13, 13, 13));
     }
 
-    // MODIFIES: this
-    // EFFECTS: Sets up the buttons
+    /**
+     * Sets up all the buttons
+     */
     private void initializeButtons() {
         setUpButton(plainImg, PLACE_PLAIN);
         setUpButton(mountainImg, PLACE_MOUNTAIN);
@@ -227,20 +274,25 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         setUpButton(deleteUnitImg, DELETE_UNIT);
     }
 
-    // MODIFIES: this
-    // EFFECTS: Sets the close operation for the TerrainEditorFrame
-    // Modeled after method from https://www.clear.rice.edu/comp310/JavaResources/frame_close.html
+    /**
+     * Sets the close operation for the TerrainEditorFrame
+     * Modeled after method from https://www.clear.rice.edu/comp310/JavaResources/frame_close.html
+     */
     private void setCloseOperation() {
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
-                printLog();
+                Logger.getLogger(TerrainEditorFrame.class.getName()).info("Closing application.");
                 System.exit(0);
             }
         });
     }
 
-    // MODIFIES: this
-    // EFFECTS: Sets up a button with the given icon and action command
+    /**
+     * Sets up a button with the given icon and action command
+     *
+     * @param icon icon for the button
+     * @param actionCommand action command for the button
+     */
     private void setUpButton(BufferedImage icon, String actionCommand) {
         JButton button = new JButton(new ImageIcon(icon));
         button.setActionCommand(actionCommand);
@@ -248,16 +300,18 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         toolPanel.add(button);
     }
 
-    // MODIFIES: this
-    // EFFECTS: Handles creating a new map
+    /**
+     * Handles creation of a new map
+     */
     private void handleNewMap() {
         initializeVariables();
         terrainPanel.setSize(terrainPanel.getPreferredSize());
         pack();
     }
 
-    // MODIFIES: this
-    // EFFECTS: Handles renaming the map
+    /**
+     * Handles renaming the current map
+     */
     private void handleRenameMap() {
         String newName = JOptionPane.showInputDialog(this,
                 "Enter the map's new name:",
@@ -271,9 +325,10 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         }
     }
 
-    // MODIFIES: this
-    // EFFECTS: Handles resizing the map
-    // Following code modeled after https://stackoverflow.com/questions/11211286/
+    /**
+     * Handles resizing the map.
+     * The following code is modeled after https://stackoverflow.com/questions/11211286/
+     */
     private void handleResizeMap() {
         TerrainResizeDialog terrainResizeDialog = new TerrainResizeDialog(this);
         terrainResizeDialog.setVisible(true);
@@ -281,27 +336,26 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
             try {
                 int newWidth = terrainResizeDialog.getNewWidth();
                 int newHeight = terrainResizeDialog.getNewHeight();
-                if (newWidth < STARTUP_MAP_HEIGHT || newHeight < 10) {
-                    JOptionPane.showMessageDialog(this,
-                            "Width must be at least 15 and height must be at least 10",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    currentTerrain.resize(newWidth, newHeight);
-                    terrainPanel.setSize(terrainPanel.getPreferredSize());
-                    pack();
-                }
-
+                currentTerrain.resize(newWidth, newHeight);
+                terrainPanel.setSize(terrainPanel.getPreferredSize());
+                pack();
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this,
                         "Please enter an integer for both width and height.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (IllegalArgumentException e) {
+                JOptionPane.showMessageDialog(this,
+                        "Width must be at least 15 and height must be at least 10",
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    // EFFECTS: Saves the terrain to json based on user input
-    // Code modeled after https://stackoverflow.com/questions/17010647/set-default-saving-extension-with-jfilechooser
-    // and https://stackoverflow.com/questions/3571223/how-do-i-get-the-file-extension-of-a-file-in-java
+    /**
+     * Saves the terrain to json based on user input.
+     * Code modeled after https://stackoverflow.com/questions/17010647/set-default-saving-extension-with-jfilechooser
+     * and https://stackoverflow.com/questions/3571223/how-do-i-get-the-file-extension-of-a-file-in-java
+     */
     private void handleSaveMap() {
         JFileChooser fc = new JFileChooser("./data/mapSaves");
         fc.setSelectedFile(new File(currentTerrain.getName() + ".json"));
@@ -322,7 +376,11 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         }
     }
 
-    // EFFECTS: Writes the current terrain to json at the given path
+    /**
+     * Writes the current terrain to json at the given path.
+     *
+     * @param path The path to where the file is to be saved, including filename and extension
+     */
     private void writeToJson(String path) {
         JsonWriter jw = new JsonWriter(path);
         try {
@@ -334,9 +392,10 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         }
     }
 
-    // MODIFIES: this
-    // EFFECTS: Loads a new map based on user input
-    // Code modeled after method from https://www.geeksforgeeks.org/java-swing-jfilechooser/
+    /**
+     * Loads a new map based on user input
+     * Code modeled after method from https://www.geeksforgeeks.org/java-swing-jfilechooser/
+     */
     private void handleLoadMap() {
         JFileChooser fc = new JFileChooser("./data/mapSaves");
         fc.addChoosableFileFilter(FILE_FILTER);
@@ -357,9 +416,13 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         pack();
     }
 
-    // MODIFIES: this
-    // EFFECTS: Inspects and modifies units based on user input
-    // Code modeled after https://stackoverflow.com/questions/7855227/wait-for-jdialog-to-close
+    /**
+     * Inspects and modifies units based on user input
+     * Code modeled after https://stackoverflow.com/questions/7855227/wait-for-jdialog-to-close
+     *
+     * @param mapX Terrain x coordinate of unit
+     * @param mapY Terrain y coordinate of unit
+     */
     void handleInspectUnit(int mapX, int mapY) {
         Unit unitToEdit = currentTerrain.getUnit(mapX, mapY);
         if (unitToEdit != null) {
@@ -373,8 +436,9 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         }
     }
 
-    // MODIFIES: this
-    // EFFECTS: Handles the click of the place unit button
+    /**
+     * Handles the click of the place unit button
+     */
     private void handlePlaceUnitButton() {
         UnitEditorDialog unitEditorDialog = new UnitEditorDialog(this, factionToAdd, battleClassToAdd);
         unitEditorDialog.setVisible(true);
@@ -385,21 +449,33 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         }
     }
 
-    // MODIFIES: this
-    // EFFECTS: Places unit on the terrain based on user input
+    /**
+     * Places unit on the terrain based on user input
+     *
+     * @param mapX Terrain x coordinate of click
+     * @param mapY Terrain y coordinate of click
+     */
     void handlePlaceUnit(int mapX, int mapY) {
         currentTerrain.addUnit(new Unit(factionToAdd, battleClassToAdd, mapX, mapY));
     }
 
-    // MODIFIES: this
-    // EFFECTS: Deletes unit based on user input
+    /**
+     * Deletes unit based on user input
+     *
+     * @param mapX Terrain x coordinate of click
+     * @param mapY Terrain y coordinate of click
+     */
     void handleDeleteUnit(int mapX, int mapY) {
         currentTerrain.deleteUnit(mapX, mapY);
     }
 
-    // MODIFIES: this
-    // EFFECTS: Handles changes to the Terrain based on clicks occurring on the map
-    @SuppressWarnings("methodlength")
+    /**
+     * Handles changes to the Terrain based on clicks occurring on the map
+     *
+     * @param mapX Terrain x coordinate of click
+     * @param mapY Terrain y coordinate of click
+     * @param dragged if the click was a drag or not
+     */
     void handleClick(int mapX, int mapY, boolean dragged) {
         switch (currentEditMode) {
             case PLACE_PLAIN:
@@ -442,12 +518,21 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         }
     }
 
-    // EFFECTS: Returns the current terrain
+    /**
+     * Returns the current terrain
+     *
+     * @return the current Terrain
+     */
     Terrain getCurrentTerrain() {
         return currentTerrain;
     }
 
-    // EFFECTS: Returns the image of the given faction
+    /**
+     * Returns the image of the given faction unit marker
+     *
+     * @param faction the faction of the desired image
+     * @return image of the unit marker
+     */
     BufferedImage getImageOfUnit(Faction faction) {
         switch (faction) {
             case PLAYER:
@@ -459,7 +544,12 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         }
     }
 
-    // EFFECTS: Returns the image corresponding to the terrain tile type.
+    /**
+     * Returns the image corresponding to the terrain tile type.
+     *
+     * @param tileType the TerrainTile corresponding to the desired image
+     * @return the desired image
+     */
     BufferedImage getImageOfTerrain(TerrainTile tileType) {
         switch (tileType) {
             case PLAIN:
@@ -479,10 +569,6 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
             default:
                 return throneImg;
         }
-    }
-
-    public static void printLog() {
-        log.info("Some string");
     }
 
 }
