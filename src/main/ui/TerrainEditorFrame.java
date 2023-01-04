@@ -23,23 +23,24 @@ import java.util.logging.Logger;
  */
 public class TerrainEditorFrame extends JFrame implements ActionListener {
 
-    private static final Logger log = Logger.getLogger(TerrainEditorFrame.class.getName());
-    private static final String NEW_MAP = "NewMap";
-    private static final String LOAD_MAP = "LoadMap";
-    private static final String SAVE_MAP = "SaveMap";
-    private static final String PLACE_PLAIN = "PLACE_PLAIN";
-    private static final String PLACE_MOUNTAIN = "PLACE_MOUNTAIN";
-    private static final String PLACE_FOREST = "PLACE_FOREST";
-    private static final String PLACE_WATER = "PLACE_WATER";
-    private static final String PLACE_WALL = "PLACE_WALL";
-    private static final String PLACE_CHEST = "PLACE_CHEST";
-    private static final String PLACE_GATE = "PLACE_GATE";
-    private static final String PLACE_THRONE = "PLACE_THRONE";
-    private static final String PLACE_UNIT = "PLACE_UNIT";
-    private static final String INSPECT_UNIT = "INSPECT_UNIT";
-    private static final String DELETE_UNIT = "DELETE_UNIT";
-    private static final String RESIZE_MAP = "ResizeMap";
-    private static final String RENAME_MAP = "RenameMap";
+//    private static final Logger log = Logger.getLogger(TerrainEditorFrame.class.getName());
+    // Action commands
+    private static final String NEW_MAP_AC = "NewMap";
+    private static final String LOAD_MAP_AC = "LoadMap";
+    private static final String SAVE_MAP_AC = "SaveMap";
+    private static final String PLACE_PLAIN_AC = "PLACE_PLAIN";
+    private static final String PLACE_MOUNTAIN_AC = "PLACE_MOUNTAIN";
+    private static final String PLACE_FOREST_AC = "PLACE_FOREST";
+    private static final String PLACE_WATER_AC = "PLACE_WATER";
+    private static final String PLACE_WALL_AC = "PLACE_WALL";
+    private static final String PLACE_CHEST_AC = "PLACE_CHEST";
+    private static final String PLACE_GATE_AC = "PLACE_GATE";
+    private static final String PLACE_THRONE_AC = "PLACE_THRONE";
+    private static final String PLACE_UNIT_AC = "PLACE_UNIT";
+    private static final String INSPECT_UNIT_AC = "INSPECT_UNIT";
+    private static final String DELETE_UNIT_AC = "DELETE_UNIT";
+    private static final String RESIZE_MAP_AC = "ResizeMap";
+    private static final String RENAME_MAP_AC = "RenameMap";
 
     private static final String STARTUP_MAP_NAME = "StartupMap";
     private static final int STARTUP_MAP_WIDTH = 20;
@@ -85,6 +86,14 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         } catch (IOException e) {
             throw new RuntimeException("Failed to initialize images.");
         }
+        // Set look and feel to match the platform.
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException |
+                 IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
         initializeVariables();
         initializeLayout();
         initializeMenuBar();
@@ -97,17 +106,6 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         setVisible(true);
         setResizable(false);
 
-        try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (UnsupportedLookAndFeelException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -156,22 +154,22 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case SAVE_MAP:
+            case SAVE_MAP_AC:
                 handleSaveMap();
                 break;
-            case LOAD_MAP:
+            case LOAD_MAP_AC:
                 handleLoadMap();
                 break;
-            case RESIZE_MAP:
+            case RESIZE_MAP_AC:
                 handleResizeMap();
                 break;
-            case RENAME_MAP:
+            case RENAME_MAP_AC:
                 handleRenameMap();
                 break;
-            case NEW_MAP:
+            case NEW_MAP_AC:
                 handleNewMap();
                 break;
-            case PLACE_UNIT:
+            case PLACE_UNIT_AC:
                 handlePlaceUnitButton();
                 break;
             case EXIT_AC:
@@ -204,16 +202,9 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
      * @return the initialized Edit menu
      */
     private JMenu initializeEditMenu() {
-        JMenuItem menuItem;
         JMenu editMenu = new JMenu("Edit");
-        menuItem = new JMenuItem("Rename");
-        menuItem.setActionCommand(RENAME_MAP);
-        menuItem.addActionListener(this);
-        editMenu.add(menuItem);
-        menuItem = new JMenuItem("Resize");
-        menuItem.setActionCommand(RESIZE_MAP);
-        menuItem.addActionListener(this);
-        editMenu.add(menuItem);
+        addMenuItem(editMenu, "Rename", RENAME_MAP_AC);
+        addMenuItem(editMenu, "Resize", RESIZE_MAP_AC);
         return editMenu;
     }
 
@@ -224,25 +215,28 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
      */
     private JMenu initializeFileMenu() {
         JMenu fileMenu = new JMenu("File");
-        JMenuItem menuItem = new JMenuItem("New");
-        menuItem.setActionCommand(NEW_MAP);
-        menuItem.addActionListener(this);
-        fileMenu.add(menuItem);
-        menuItem = new JMenuItem("Load");
-        menuItem.setActionCommand(LOAD_MAP);
-        menuItem.addActionListener(this);
-        fileMenu.add(menuItem);
-        menuItem = new JMenuItem("Save");
-        menuItem.setActionCommand(SAVE_MAP);
-        menuItem.addActionListener(this);
-        fileMenu.add(menuItem);
-        fileMenu.addSeparator();
-        menuItem = new JMenuItem("Exit");
-        menuItem.setActionCommand(EXIT_AC);
-        menuItem.addActionListener(this);
-        fileMenu.add(menuItem);
 
+        addMenuItem(fileMenu, "New", NEW_MAP_AC);
+        addMenuItem(fileMenu, "Load", LOAD_MAP_AC);
+        addMenuItem(fileMenu, "Save", SAVE_MAP_AC);
+        fileMenu.addSeparator();
+        addMenuItem(fileMenu, "Exit", EXIT_AC);
         return fileMenu;
+    }
+
+    /**
+     * Adds a menu item to the given menu
+     *
+     * @param menu The {@link JMenu} to add the {@link JMenuItem} to
+     * @param menuText The text of the {@link JMenuItem}
+     * @param actionCommand The associated action command of the {@link JMenuItem}
+     */
+    private void addMenuItem(JMenu menu, String menuText, String actionCommand) {
+        JMenuItem menuItem = new JMenuItem(menuText);
+        menuItem.setActionCommand(actionCommand);
+        menuItem.addActionListener(this);
+        menuItem.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        menu.add(menuItem);
     }
 
     /**
@@ -261,22 +255,22 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
      * Sets up all the buttons
      */
     private void initializeButtons() {
-        setUpButton(plainImg, PLACE_PLAIN);
-        setUpButton(mountainImg, PLACE_MOUNTAIN);
-        setUpButton(forestImg, PLACE_FOREST);
-        setUpButton(waterImg, PLACE_WATER);
-        setUpButton(wallImg, PLACE_WALL);
-        setUpButton(chestImg, PLACE_CHEST);
-        setUpButton(gateImg, PLACE_GATE);
-        setUpButton(throneImg, PLACE_THRONE);
-        setUpButton(addUnitImg, PLACE_UNIT);
-        setUpButton(inspectUnitImg, INSPECT_UNIT);
-        setUpButton(deleteUnitImg, DELETE_UNIT);
+        setUpButton(plainImg, PLACE_PLAIN_AC);
+        setUpButton(mountainImg, PLACE_MOUNTAIN_AC);
+        setUpButton(forestImg, PLACE_FOREST_AC);
+        setUpButton(waterImg, PLACE_WATER_AC);
+        setUpButton(wallImg, PLACE_WALL_AC);
+        setUpButton(chestImg, PLACE_CHEST_AC);
+        setUpButton(gateImg, PLACE_GATE_AC);
+        setUpButton(throneImg, PLACE_THRONE_AC);
+        setUpButton(addUnitImg, PLACE_UNIT_AC);
+        setUpButton(inspectUnitImg, INSPECT_UNIT_AC);
+        setUpButton(deleteUnitImg, DELETE_UNIT_AC);
     }
 
     /**
      * Sets the close operation for the TerrainEditorFrame
-     * Modeled after method from https://www.clear.rice.edu/comp310/JavaResources/frame_close.html
+     * Modeled after method from <a href="https://www.clear.rice.edu/comp310/JavaResources/frame_close.html">...</a>
      */
     private void setCloseOperation() {
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -327,7 +321,7 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
 
     /**
      * Handles resizing the map.
-     * The following code is modeled after https://stackoverflow.com/questions/11211286/
+     * The following code is modeled after <a href="https://stackoverflow.com/questions/11211286/">...</a>
      */
     private void handleResizeMap() {
         TerrainResizeDialog terrainResizeDialog = new TerrainResizeDialog(this);
@@ -353,8 +347,8 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
 
     /**
      * Saves the terrain to json based on user input.
-     * Code modeled after https://stackoverflow.com/questions/17010647/set-default-saving-extension-with-jfilechooser
-     * and https://stackoverflow.com/questions/3571223/how-do-i-get-the-file-extension-of-a-file-in-java
+     * Code modeled after <a href="https://stackoverflow.com/questions/17010647/set-default-saving-extension-with-jfilechooser">...</a>
+     * and <a href="https://stackoverflow.com/questions/3571223/how-do-i-get-the-file-extension-of-a-file-in-java">...</a>
      */
     private void handleSaveMap() {
         JFileChooser fc = new JFileChooser("./data/mapSaves");
@@ -394,7 +388,7 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
 
     /**
      * Loads a new map based on user input
-     * Code modeled after method from https://www.geeksforgeeks.org/java-swing-jfilechooser/
+     * Code modeled after method from <a href="https://www.geeksforgeeks.org/java-swing-jfilechooser/">...</a>
      */
     private void handleLoadMap() {
         JFileChooser fc = new JFileChooser("./data/mapSaves");
@@ -418,7 +412,7 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
 
     /**
      * Inspects and modifies units based on user input
-     * Code modeled after https://stackoverflow.com/questions/7855227/wait-for-jdialog-to-close
+     * Code modeled after <a href="https://stackoverflow.com/questions/7855227/wait-for-jdialog-to-close">...</a>
      *
      * @param mapX Terrain x coordinate of unit
      * @param mapY Terrain y coordinate of unit
