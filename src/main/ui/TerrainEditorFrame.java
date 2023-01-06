@@ -11,42 +11,21 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
+import java.util.function.Consumer;
 
 /**
  * Represents a graphical interface to edit Terrain objects
  */
-public class TerrainEditorFrame extends JFrame implements ActionListener {
-
-//    private static final Logger log = Logger.getLogger(TerrainEditorFrame.class.getName());
-    // Action commands
-    private static final String NEW_MAP_AC = "NewMap";
-    private static final String LOAD_MAP_AC = "LoadMap";
-    private static final String SAVE_MAP_AC = "SaveMap";
-    private static final String PLACE_PLAIN_AC = "PLACE_PLAIN";
-    private static final String PLACE_MOUNTAIN_AC = "PLACE_MOUNTAIN";
-    private static final String PLACE_FOREST_AC = "PLACE_FOREST";
-    private static final String PLACE_WATER_AC = "PLACE_WATER";
-    private static final String PLACE_WALL_AC = "PLACE_WALL";
-    private static final String PLACE_CHEST_AC = "PLACE_CHEST";
-    private static final String PLACE_GATE_AC = "PLACE_GATE";
-    private static final String PLACE_THRONE_AC = "PLACE_THRONE";
-    private static final String PLACE_UNIT_AC = "PLACE_UNIT";
-    private static final String INSPECT_UNIT_AC = "INSPECT_UNIT";
-    private static final String DELETE_UNIT_AC = "DELETE_UNIT";
-    private static final String RESIZE_MAP_AC = "ResizeMap";
-    private static final String RENAME_MAP_AC = "RenameMap";
+public class TerrainEditorFrame extends JFrame {
 
     private static final String STARTUP_MAP_NAME = "StartupMap";
     private static final int STARTUP_MAP_WIDTH = 20;
     private static final int STARTUP_MAP_HEIGHT = 15;
     public static final String APP_NAME = "Terrain Editor: ";
-    private static final String EXIT_AC = "EXIT";
 
     private Terrain currentTerrain;
     private TerrainPanel terrainPanel;
@@ -148,42 +127,6 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
     }
 
     /**
-     * Handles user actions
-     *
-     * @param e the event to be processed
-     */
-    public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()) {
-            case SAVE_MAP_AC:
-                handleSaveMap();
-                break;
-            case LOAD_MAP_AC:
-                handleLoadMap();
-                break;
-            case RESIZE_MAP_AC:
-                handleResizeMap();
-                break;
-            case RENAME_MAP_AC:
-                handleRenameMap();
-                break;
-            case NEW_MAP_AC:
-                handleNewMap();
-                break;
-            case PLACE_UNIT_AC:
-                handlePlaceUnitButton();
-                break;
-            case EXIT_AC:
-                // from https://stackoverflow.com/questions/1234912/how-to-programmatically-close-a-jframe
-                this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-            default:
-                if (EditMode.isMode(e.getActionCommand())) {
-                    currentEditMode = EditMode.valueOf(e.getActionCommand());
-                }
-                break;
-        }
-    }
-
-    /**
      * Initializes the menu bar
      */
     private void initializeMenuBar() {
@@ -208,8 +151,8 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
      */
     private JMenu initializeEditMenu() {
         JMenu editMenu = new JMenu("Edit");
-        addMenuItem(editMenu, "Rename", RENAME_MAP_AC);
-        addMenuItem(editMenu, "Resize", RESIZE_MAP_AC);
+        addMenuItem(editMenu, "Rename", (e -> handleRenameMap()));
+        addMenuItem(editMenu, "Resize", (e -> handleResizeMap()));
         return editMenu;
     }
 
@@ -221,11 +164,12 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
     private JMenu initializeFileMenu() {
         JMenu fileMenu = new JMenu("File");
 
-        addMenuItem(fileMenu, "New", NEW_MAP_AC);
-        addMenuItem(fileMenu, "Load", LOAD_MAP_AC);
-        addMenuItem(fileMenu, "Save", SAVE_MAP_AC);
+        addMenuItem(fileMenu, "New", (e -> handleNewMap()));
+        addMenuItem(fileMenu, "Load", (e -> handleLoadMap()));
+        addMenuItem(fileMenu, "Save", (e -> handleSaveMap()));
         fileMenu.addSeparator();
-        addMenuItem(fileMenu, "Exit", EXIT_AC);
+        // from https://stackoverflow.com/questions/1234912/how-to-programmatically-close-a-jframe
+        addMenuItem(fileMenu, "Exit", (e -> this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING))));
         return fileMenu;
     }
 
@@ -234,12 +178,12 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
      *
      * @param menu The {@link JMenu} to add the {@link JMenuItem} to
      * @param menuText The text of the {@link JMenuItem}
-     * @param actionCommand The associated action command of the {@link JMenuItem}
+     * @param ae A lambda expression that accepts an {@link ActionEvent}, and calls the desired
+     *           function to handle the event.
      */
-    private void addMenuItem(JMenu menu, String menuText, String actionCommand) {
+    private void addMenuItem(JMenu menu, String menuText, Consumer<ActionEvent> ae) {
         JMenuItem menuItem = new JMenuItem(menuText);
-        menuItem.setActionCommand(actionCommand);
-        menuItem.addActionListener(this);
+        menuItem.addActionListener(e -> ae.accept(e));
         menu.add(menuItem);
     }
 
@@ -259,17 +203,17 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
      * Sets up all the buttons
      */
     private void initializeButtons() {
-        setUpButton(plainImg, PLACE_PLAIN_AC);
-        setUpButton(mountainImg, PLACE_MOUNTAIN_AC);
-        setUpButton(forestImg, PLACE_FOREST_AC);
-        setUpButton(waterImg, PLACE_WATER_AC);
-        setUpButton(wallImg, PLACE_WALL_AC);
-        setUpButton(chestImg, PLACE_CHEST_AC);
-        setUpButton(gateImg, PLACE_GATE_AC);
-        setUpButton(throneImg, PLACE_THRONE_AC);
-        setUpButton(addUnitImg, PLACE_UNIT_AC);
-        setUpButton(inspectUnitImg, INSPECT_UNIT_AC);
-        setUpButton(deleteUnitImg, DELETE_UNIT_AC);
+        setUpButton(plainImg, (e -> currentEditMode = EditMode.PLACE_PLAIN));
+        setUpButton(mountainImg, (e -> currentEditMode = EditMode.PLACE_MOUNTAIN));
+        setUpButton(forestImg, (e -> currentEditMode = EditMode.PLACE_FOREST));
+        setUpButton(waterImg, (e -> currentEditMode = EditMode.PLACE_WATER));
+        setUpButton(wallImg, (e -> currentEditMode = EditMode.PLACE_WALL));
+        setUpButton(chestImg, (e -> currentEditMode = EditMode.PLACE_CHEST));
+        setUpButton(gateImg, (e -> currentEditMode = EditMode.PLACE_GATE));
+        setUpButton(throneImg, (e -> currentEditMode = EditMode.PLACE_THRONE));
+        setUpButton(addUnitImg, (e -> handlePlaceUnitButton()));
+        setUpButton(inspectUnitImg, (e -> currentEditMode = EditMode.INSPECT_UNIT));
+        setUpButton(deleteUnitImg, (e -> currentEditMode = EditMode.DELETE_UNIT));
     }
 
     /**
@@ -279,7 +223,6 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
     private void setCloseOperation() {
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
-                Logger.getLogger(TerrainEditorFrame.class.getName()).info("Closing application.");
                 System.exit(0);
             }
         });
@@ -289,12 +232,12 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
      * Sets up a button with the given icon and action command
      *
      * @param icon icon for the button
-     * @param actionCommand action command for the button
+     * @param ae A lambda expression that takes an {@link ActionEvent} and calls the desired
+     *           function to handle the event
      */
-    private void setUpButton(BufferedImage icon, String actionCommand) {
+    private void setUpButton(BufferedImage icon, Consumer<ActionEvent> ae) {
         JButton button = new JButton(new ImageIcon(icon));
-        button.setActionCommand(actionCommand);
-        button.addActionListener(this);
+        button.addActionListener(e -> ae.accept(e));
         toolPanel.add(button);
     }
 
@@ -532,14 +475,11 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
      * @return image of the unit marker
      */
     BufferedImage getImageOfUnit(Faction faction) {
-        switch (faction) {
-            case PLAYER:
-                return playerImg;
-            case ENEMY:
-                return enemyImg;
-            default:
-                return allyImg;
-        }
+        return switch (faction) {
+            case PLAYER -> playerImg;
+            case ENEMY -> enemyImg;
+            default -> allyImg;
+        };
     }
 
     /**
@@ -549,24 +489,16 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
      * @return the desired image
      */
     BufferedImage getImageOfTerrain(TerrainTile tileType) {
-        switch (tileType) {
-            case PLAIN:
-                return plainImg;
-            case MOUNTAIN:
-                return mountainImg;
-            case FOREST:
-                return forestImg;
-            case WATER:
-                return waterImg;
-            case WALL:
-                return wallImg;
-            case CHEST:
-                return chestImg;
-            case GATE:
-                return gateImg;
-            default:
-                return throneImg;
-        }
+        return switch (tileType) {
+            case PLAIN -> plainImg;
+            case MOUNTAIN -> mountainImg;
+            case FOREST -> forestImg;
+            case WATER -> waterImg;
+            case WALL -> wallImg;
+            case CHEST -> chestImg;
+            case GATE -> gateImg;
+            default -> throneImg;
+        };
     }
 
 }

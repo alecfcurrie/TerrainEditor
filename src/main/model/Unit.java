@@ -29,7 +29,7 @@ public class Unit implements Writable {
         this.faction = faction;
         this.battleClass = battleClass;
         this.position = new Point(x, y);
-        log.info(EventUtility.getUnitInstantiationMessage(this));
+        log.fine(EventUtility.getUnitInstantiationMessage(this));
     }
 
     /**
@@ -39,7 +39,7 @@ public class Unit implements Writable {
      */
     public void setFaction(Faction faction) {
         this.faction = faction;
-        log.info(EventUtility.getFactionChangeMessage(this));
+        log.fine(EventUtility.getFactionChangeMessage(this));
     }
 
     /**
@@ -49,7 +49,7 @@ public class Unit implements Writable {
      */
     public void setBattleClass(BattleClass battleClass) {
         this.battleClass = battleClass;
-        log.info(EventUtility.getBattleClassChangeMessage(this));
+        log.fine(EventUtility.getBattleClassChangeMessage(this));
     }
 
     /**
