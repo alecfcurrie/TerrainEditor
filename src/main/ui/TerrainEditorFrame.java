@@ -187,13 +187,18 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
      * Initializes the menu bar
      */
     private void initializeMenuBar() {
+        // Work around for space always being reserved for menu item icons in the Windows look and feel.
+        // https://github.com/JFormDesigner/FlatLaf/issues/328
+        UIManager.put("MenuItem.margin", new Insets(2, -25, 2, -5));
+
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = initializeFileMenu();
         JMenu editMenu = initializeEditMenu();
 
-        this.setJMenuBar(menuBar);
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
+
+        this.setJMenuBar(menuBar);
     }
 
     /**
@@ -235,7 +240,6 @@ public class TerrainEditorFrame extends JFrame implements ActionListener {
         JMenuItem menuItem = new JMenuItem(menuText);
         menuItem.setActionCommand(actionCommand);
         menuItem.addActionListener(this);
-        menuItem.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         menu.add(menuItem);
     }
 
