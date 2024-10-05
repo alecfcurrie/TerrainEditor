@@ -1,4 +1,4 @@
-# Personal Project: Map Creator
+# Personal Project: Terrain Editor
 
 This project allows users to open, edit, and save grid-based 2D maps for overhead strategy games. I've 
 modded the GameBoy Advance Fire Emblem games before, and the existing tools can be daunting due to their complexity. 
